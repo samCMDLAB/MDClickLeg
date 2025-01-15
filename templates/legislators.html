@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>District Information</title>
+    <link rel="icon" type="image/png" href="https://www.mdlab.org/wp-content/uploads/MLA.logo_.TenantRightTocCounsel-1.png">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #004494;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .notes-input {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #004494;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #004494;
+        }
+
+        .form-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+
+        /* Logo Styling */
+        .logo-container {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+
+        .logo-container img {
+            height: 50px;
+            width: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo-container">
+        <img src="https://www.mdlab.org/wp-content/uploads/MLA.logo_.TenantRightTocCounsel-1.png" alt="Logo">
+    </div>
+
+    <h1>District Information</h1>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Chamber</th>
+                <th>District</th>
+                <th>Party</th>
+                <th>Committee Assignments</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for district in districts %}
+            <tr>
+                <td>{{ district['id'] }}</td>
+                <td>{{ district['name'] }}</td>
+                <td>{{ district['chamber'] }}</td>
+                <td>{{ district['district'] }}</td>
+                <td>{{ district['party'] }}</td>
+                <td>{{ district['committee'] }}</td>
+                <td>
+                    <form action="{{ url_for('legislators', lat=lat, lon=lon) }}" method="POST">
+                        <input type="hidden" name="district_id" value="{{ district['id'] }}">
+                        <textarea class="notes-input" name="notes" rows="3">{{ district['notes'] }}</textarea>
+                        <button type="submit">Update Notes</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
