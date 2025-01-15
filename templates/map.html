@@ -177,8 +177,11 @@
         document.getElementById("address-form").addEventListener("submit", function (e) {
             e.preventDefault();
 
-            const address = document.getElementById("address").value;
+            let address = document.getElementById("address").value;
 
+            address += ' MD';
+
+            console.log(address);
             fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`)
                 .then(response => response.json())
                 .then(data => {

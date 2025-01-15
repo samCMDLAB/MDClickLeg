@@ -2,10 +2,9 @@ import sqlite3
 from shapely.geometry import Point
 from shapely.wkt import loads
 from flask import Flask, request, render_template, redirect, url_for, jsonify
-import requests
 
 app = Flask(__name__)
-DB_NAME = "data/districts.db"
+DB_NAME = "/home/SamcMDLAB/mysite/data/districts.db"
 
 # Helper function to connect to the database
 def connect_db():
@@ -53,7 +52,8 @@ def process_coordinate():
     data = request.json
     lat = data.get("lat")
     lon = data.get("lon")
-
+    lat = float(lat)
+    lon = float(lon)
     if lat is None or lon is None:
         return jsonify({"error": "Invalid coordinates"}), 400
 
@@ -62,10 +62,12 @@ def process_coordinate():
 
 @app.route("/legislators/<lat>/<lon>", methods=["GET", "POST"])
 def legislators(lat, lon):
+    lat = float(lat)
+    lon = float(lon)
     try:
         # Fetch districts for the given latitude and longitude
         districts = get_districts_by_coordinate(lat, lon)
-        
+
         if request.method == "POST":
             # Get the district ID and the updated notes from the form
             district_id = request.form['district_id']
@@ -83,7 +85,7 @@ def legislators(lat, lon):
         return render_template("legislators.html", districts=districts, lat=lat, lon=lon)
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": str(e), "type": str(type(lat))}), 400
 
 if __name__ == "__main__":
     app.run(debug=True)
